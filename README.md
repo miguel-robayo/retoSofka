@@ -1,34 +1,32 @@
-automationE2E
+retoSofka
 
-End-to-end automation of the purchase flow on https://www.saucedemo.com/ using Serenity BDD (Screenplay),
-Cucumber and Selenium WebDriver.
+Technical automation challenge. Each folder is an independent Maven project.
 
-Automated flow
-1. Log in with standard_user / secret_sauce
-2. Validate the products page (Products)
-3. Add two products to the cart (Sauce Labs Backpack, Sauce Labs Bike Light)
-4. View the cart and go to checkout
-5. Fill in the checkout form (First Name, Last Name, Postal Code)
-6. Finish the purchase and validate the message THANK YOU FOR YOUR ORDER
+- front -> E2E automation of the purchase flow on https://www.saucedemo.com/
+           (Serenity BDD, Screenplay, Cucumber, Selenium). See front/README.md
+- api   -> REST API automation of the signup and login services of https://www.demoblaze.com/
+           (Karate, JUnit 5). See api/README.md
 
 Requirements
 - Java 17
 - Maven 3.9+
-- Google Chrome
-
-Project structure
-- src/test/resources/features   -> Cucumber feature (test data and credentials)
-- src/test/java/stepdefinitions -> Step definitions and actor setup
-- src/test/java/tasks           -> Screenplay tasks (Login, AddProducts, FillOrderForm)
-- src/test/java/questions       -> Screenplay questions (ProductsPageTitle, ConfirmationMessage)
-- src/test/java/pages           -> Page targets (LoginPage, ProductPage, HomePage, CartPage, ModalPage)
-- src/test/java/runners         -> PurchaseRunner
-- src/test/resources/serenity.conf -> Browser configuration (Chrome password manager disabled to avoid the
-  leaked-password popup that blocks clicks after login)
+- Google Chrome (front only)
 
 Running the tests using Maven
-mvn clean verify -Dtest=PurchaseRunner
+There is no pom.xml in the root folder, run Maven from each project folder:
 
-after execution, the Serenity report will be available at:
+  front
+  cd front
+  mvn clean verify -Dtest=PurchaseRunner
+  report: front/target/site/serenity/index.html
 
-target/site/serenity/index.html
+  api
+  cd api
+  mvn clean verify -Dtest=SignupLoginRunner
+  report: api/target/karate-reports/karate-summary.html
+
+Or from the root folder using -f:
+  mvn -f front/pom.xml clean verify -Dtest=PurchaseRunner
+  mvn -f api/pom.xml clean verify -Dtest=SignupLoginRunner
+
+Note: the api .feature file is executed by Karate, run it through SignupLoginRunner (not as a Cucumber feature).

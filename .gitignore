@@ -4,5 +4,8 @@
 out/
 ../.idea/
 
-#MVN
+#MVN (front y api)
 target/
+
+#Karate (api)
+karate.log

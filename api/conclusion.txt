@@ -1,0 +1,86 @@
+CONCLUSIONES
+
+  Se logro automatizar correctamente las pruebas de los servicios REST de signup y login de https://www.demoblaze.com/
+  identificando las entradas y capturando las salidas de los siguientes casos:
+
+    - Crear un nuevo usuario en signup                -> ""
+    - Intentar crear un usuario ya existente          -> {"errorMessage":"This user already exist."}
+    - Usuario y password correcto en login            -> "Auth_token: <token>"
+    - Usuario y password incorrecto en login          -> {"errorMessage":"Wrong password."}
+    - Usuario inexistente en login                    -> {"errorMessage":"User does not exist."}
+
+  Entradas: POST con body JSON { "username": "<usuario>", "password": "<password en Base64>" }
+
+  Durante la ejecucion se presentaron los siguientes hallazgos:
+
+    - Todos los servicios responden HTTP 200 incluso en los casos de error, el error solo se identifica por el campo
+    errorMessage del body, por lo que no se puede validar unicamente con el codigo de estado
+    - El signup exitoso responde el texto plano "" (con salto de linea) y no un JSON, lo que dificulta su validacion
+    - El password viaja codificado en Base64 (no cifrado), por lo que es facilmente reversible
+    - El token de login es el usuario + datos codificados en Base64, no un token seguro (ej. JWT)
+
+  A nivel tecnico:
+
+    - Estructura de carpetas incorrecta (archivos fuera de src/test/java), Maven no encontraba el runner
+    - Generacion de usuario unico por ejecucion (callonce) para que el escenario de creacion sea repetible
+
+  Beneficios de usar Karate Framework:
+
+    - Facilidad de creacion y ejecucion de escenarios de pruebas
+    - No requiere librerias adicionales "RestAssured"
+    - Validacion de Json simple (match)
+    - uso de background para el baseUrl y los datos de prueba
+    - Reporte HTML con el request y response de cada escenario
+    - Separacion de runner y feature
+
+  Oportunidad de mejora
+
+    - Implementar validacion de Json schema
+    - Externalizar datos de prueba y ambientes (karate-config.js)
+    - Validaciones negativas adicionales (campos vacios, body invalido)
+    - Integracion de CI/CD
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+CONCLUSIONS
+
+  The REST signup and login services of https://www.demoblaze.com/ were successfully automated, identifying the inputs
+  and capturing the outputs of the following cases:
+
+    - Create a new user in signup                     -> ""
+    - Try to create an existing user                  -> {"errorMessage":"This user already exist."}
+    - Valid username and password in login            -> "Auth_token: <token>"
+    - Invalid username and password in login          -> {"errorMessage":"Wrong password."}
+    - Non-existent user in login                      -> {"errorMessage":"User does not exist."}
+
+  Inputs: POST with JSON body { "username": "<user>", "password": "<password in Base64>" }
+
+  During execution, the following findings were identified:
+
+    - All services return HTTP 200 even in error cases; errors are only identified by the errorMessage field in the
+    body, so validation cannot rely on the status code alone
+    - A successful signup returns the plain text "" (with a line break) instead of JSON, which makes validation harder
+    - The password is sent Base64 encoded (not encrypted), so it is easily reversible
+    - The login token is the username plus data encoded in Base64, not a secure token (e.g. JWT)
+
+  Technical level findings:
+
+    - Incorrect folder structure (files outside src/test/java), Maven could not find the runner
+    - Unique username generated per execution (callonce) so the creation scenario is repeatable
+
+  Benefits of using the Karate Framework
+
+    - Ease of creating and executing test scenarios
+    - no need for additional libraries such as RestAssured
+    - Simple JSON validation using match
+    - Use of Background for baseUrl and test data
+    - HTML report with the request and response of each scenario
+    - Clear separation between runner and feature files
+
+  Improvement opportunities
+
+    - Implementation JSON schema validation
+    - Externalize test data and environments (karate-config.js)
+    - Additional negative validations (empty fields, invalid body)
+    - Integrate with CI/CD pipelines
