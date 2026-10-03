@@ -1,0 +1,96 @@
+CONCLUSIONES
+
+ Se logro automatizar de forma exitosa el flujo end-to-end de compra de productos en https://www.saucedemo.com/
+ garantizando cobertura de happy path reduciendo riesgos en regresiones, abordando:
+
+      - Autenticacion con usuario standard_user
+      - Validacion de ingreso a la pagina de productos (Products)
+      - Seleccion de multiples productos desde el listado
+      - Gestion de carrito de compras
+      - Proceso de compra (Checkout)
+      - Ingreso de informacion (First Name, Last Name, Postal Code)
+      - Validacion de mensaje de confirmacion "THANK YOU FOR YOUR ORDER"
+
+ A nivel tecnico se detectaron los siguientes puntos:
+
+      - Se priorizo el uso de By.id() y selectores CSS para los elementos de la pagina, dejando Xpath unicamente para
+      el boton "Add to cart" parametrizado por nombre de producto, mejorando la estabilidad y rendimiento
+      - El formulario de compra valida campos obligatorios, pero no se detectan validaciones sobre los tipos de datos
+      que se pueden ingresar en cada caja de texto (ej. codigo postal)
+      - La validacion del login se realiza en un paso independiente, permitiendo identificar el fallo en el punto
+      exacto donde ocurre y no en pasos posteriores
+
+ En cuanto a la arquitectura del framework se fortalecio en:
+
+     - La utilizacion de patron Screenplay
+     - Separacion de responsabilidades (page, task, question, stepdefinition)
+     - Parametrizacion de data desde el archivo .feature (List, DataTable), incluyendo las credenciales de acceso
+     - Configuracion del navegador centralizada en serenity.conf
+     - Mejoramiento en cuanto la mantenibilidad, legibilidad, reduccion de duplicidad
+
+ Oportunidad de mejora:
+
+     - Validacion de montos totales (subtotal, impuesto, total) y cantidad de productos en el carrito
+     - Validaciones negativas (campos vacios, datos invalidos, usuario bloqueado locked_out_user)
+     - Escenarios de error
+     - Integracion con pipeline CI/CD
+     - Ejecucion por tags (regresion, smoke)
+
+ Errores presentados:
+
+     - Version de java y maven no actualizados
+     - Manejo de librerias en proyectos diferentes (E2E, API) y dependencias duplicadas en el pom.xml
+     - Locators y datos de prueba de otro sitio que no correspondian a saucedemo
+     - Popup nativo de Chrome de contrasena filtrada (gestor de contrasenas) que bloqueaba los clics despues del login,
+     solucionado deshabilitando el gestor de contrasenas en serenity.conf
+     - Generar llave SSH para subir codigo a repositorio github
+
+------------------------------------------------------------------------------------------------------------------------
+
+CONCLUSIONS
+
+  The end-to-end automation flow for purchasing products on https://www.saucedemo.com/ was successfully implemented,
+   ensuring happy path coverage and reducing regression risks. The automation addressed:
+
+    - Authentication with the standard_user account
+    - Validation of access to the products page (Products)
+    - Selection of multiple products from the inventory list
+    - Shopping cart management
+    - Checkout process
+    - User information input (First Name, Last Name, Postal Code)
+    - Confirmation message validation "THANK YOU FOR YOUR ORDER"
+
+  At a technical level, the following points were identified:
+
+    - By.id() and CSS selectors were prioritized to identify web elements, keeping Xpath only for the "Add to cart"
+    button parameterized by product name, improving stability and performance.
+    - The checkout form validates required fields, but no validation was detected regarding the data types allowed in
+    each input field (e.g. postal code).
+    - Login validation is performed in an independent step, so failures are reported at the exact point where they
+    happen instead of in later steps.
+
+The framework architecture was strengthened through:
+
+    - Implementation of the Screenplay pattern
+    - Clear separation of responsibilities (Page, Task, Question, Step Definition)
+    - Data parameterization from the .feature file (List, DataTable), including login credentials
+    - Browser configuration centralized in serenity.conf
+    - Improvements in maintainability, readability, and reduction of code duplication
+
+Improvement Opportunities
+
+    - Validation of total amounts (subtotal, tax, total) and product quantities in the cart
+    - Negative validations (empty fields, invalid data, locked_out_user account)
+    - Error handling scenarios
+    - CI/CD pipeline integration
+    - Execution by tags (regression, smoke)
+
+Issues Encountered
+
+    - Outdated Java and Maven versions
+    - Dependency management challenges across different projects (E2E and API) and duplicated dependencies in pom.xml
+    - Misspelled URL in the login step that did not raise an error and caused later steps to fail
+    - Locators and test data from another site that did not match saucedemo
+    - Native Chrome leaked-password popup (password manager) blocking clicks after login, solved by disabling the
+    password manager in serenity.conf
+    - SSH key generation required to push code to the GitHub repository
